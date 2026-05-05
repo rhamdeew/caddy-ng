@@ -1,14 +1,7 @@
 # Caddyfile — Server 1
 {
   servers {
-    listener_wrappers {
-      trojan
-      tls
-    }
-    protocol {
-      allow_h2c
-      experimental_http3
-    }
+    protocols h1 h2 h2c h3
   }
 
   log {
