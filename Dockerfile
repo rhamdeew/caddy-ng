@@ -1,12 +1,11 @@
-FROM golang:1.25-alpine AS builder
-RUN apk add --no-cache git gcc musl-dev
-RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-RUN xcaddy build \
-    --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
-    --with github.com/imgk/caddy-trojan \
-    --output /usr/bin/caddy
+FROM alpine:latest AS downloader
+RUN apk add --no-cache curl tar xz
+ARG NAIVE_VERSION=v2.11.2-naive
+RUN curl -fsSL "https://github.com/klzgrad/forwardproxy/releases/download/${NAIVE_VERSION}/caddy-forwardproxy-naive.tar.xz" \
+    | tar xJ --strip-components=1 caddy-forwardproxy-naive/caddy \
+    && mv caddy /usr/bin/caddy
 
 FROM alpine:latest
 RUN apk add --no-cache ca-certificates
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+COPY --from=downloader /usr/bin/caddy /usr/bin/caddy
 CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]

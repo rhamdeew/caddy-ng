@@ -1,6 +1,6 @@
 services:
   caddy:
-    image: ghcr.io/rhamdeew/caddy-ng:latest
+    build: .
     network_mode: host
     restart: always
     volumes:
