@@ -1,0 +1,39 @@
+# Caddyfile — Server 1
+{
+  servers {
+    listener_wrappers {
+      trojan
+      tls
+    }
+    protocol {
+      allow_h2c
+      experimental_http3
+    }
+  }
+
+  log {
+    output file /var/log/caddy/caddy.log {
+      roll_size 100mb
+      roll_keep 1
+      roll_keep_for 720h
+    }
+  }
+}
+
+:443, entry.your-domain.com {
+  tls your@email.com
+
+  route {
+    forward_proxy {
+      basic_auth clientuser clientpassword
+      hide_ip
+      hide_via
+      probe_resistance secret_token_here
+      upstream https://server1user:strongpassword@exit.your-domain.com:443
+    }
+
+    file_server {
+      root /var/www/html
+    }
+  }
+}
