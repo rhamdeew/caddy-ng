@@ -1,5 +1,6 @@
-# Caddyfile — Server 1
 {
+  order forward_proxy before file_server
+
   log {
     output file /var/log/caddy/caddy.log {
       roll_size 100mb
@@ -12,17 +13,17 @@
 :443, entry.your-domain.com {
   tls your@email.com
 
-  route {
-    forward_proxy {
-      basic_auth clientuser clientpassword
-      hide_ip
-      hide_via
-      probe_resistance secret_token_here
-      upstream https://server1user:strongpassword@exit.your-domain.com:443
-    }
+  encode
 
-    file_server {
-      root /var/www/html
-    }
+  forward_proxy {
+    basic_auth clientuser clientpassword
+    hide_ip
+    hide_via
+    probe_resistance secret_token_here
+    upstream https://server1user:strongpassword@exit.your-domain.com:443
+  }
+
+  file_server {
+    root /var/www/html
   }
 }
