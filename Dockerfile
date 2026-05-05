@@ -1,9 +1,8 @@
 FROM golang:1.25-alpine AS builder
 RUN apk add --no-cache git gcc musl-dev
 RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-RUN xcaddy build \
-    --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
-    --with github.com/imgk/caddy-trojan \
+RUN xcaddy build v2.11.2 \
+    --with github.com/caddyserver/forwardproxy=github.com/klzgrad/forwardproxy@naive \
     --output /usr/bin/caddy
 
 FROM alpine:latest

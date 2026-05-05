@@ -1,15 +1,5 @@
-# Caddyfile — Server 1
 {
-  servers {
-    listener_wrappers {
-      trojan
-      tls
-    }
-    protocol {
-      allow_h2c
-      experimental_http3
-    }
-  }
+  order forward_proxy before file_server
 
   log {
     output file /var/log/caddy/caddy.log {
@@ -23,17 +13,18 @@
 :443, entry.your-domain.com {
   tls your@email.com
 
-  route {
-    forward_proxy {
-      basic_auth clientuser clientpassword
-      hide_ip
-      hide_via
-      probe_resistance secret_token_here
-      upstream https://server1user:strongpassword@exit.your-domain.com:443
-    }
+  @notconnect not method CONNECT
+  encode @notconnect
 
-    file_server {
-      root /var/www/html
-    }
+  forward_proxy {
+    basic_auth clientuser clientpassword
+    hide_ip
+    hide_via
+    probe_resistance secret_token_here
+    upstream https://server1user:strongpassword@exit.your-domain.com:443
+  }
+
+  file_server {
+    root /var/www/html
   }
 }
