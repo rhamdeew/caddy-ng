@@ -1,9 +1,5 @@
 # Caddyfile — Server 1
 {
-  servers {
-    protocols h1 h2 h2c h3
-  }
-
   log {
     output file /var/log/caddy/caddy.log {
       roll_size 100mb
